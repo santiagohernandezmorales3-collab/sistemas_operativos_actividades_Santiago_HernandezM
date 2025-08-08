@@ -1,16 +1,30 @@
-all: main
+ 	#	compilador que se va a usar
+CC=gcc
+	#	opciones de compilacion
+CFLAGS= -Wall -std=c11
+ 	#	archivos que se generaran al compilar por separado
+OBJ=prog01.o modulo.o
 
-CC = clang
-override CFLAGS += -g -Wno-everything -pthread -lm
+ 	#	nombre del ejecutable:
+all:programa
 
-SRCS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.c' -print)
-HEADERS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.h' -print)
+ 	#	genera el ejecutable programa
+programa: $(OBJ)
+	$(CC) $(CFLAGS) -o programa $(OBJ)
 
-main: $(SRCS) $(HEADERS)
-	$(CC) $(CFLAGS) $(SRCS) -o "$@"
+ 	#	forma de compilar prog01.c
+prog01.o: prog01.c modulo.h
+	$(CC) $(CFLAGS) -c prog01.c
 
-main-debug: $(SRCS) $(HEADERS)
-	$(CC) $(CFLAGS) -O0 $(SRCS) -o "$@"
+ 	#	forma de compilar modulo.c modulo.h
+modulo.o: modulo.c modulo.h
+	$(CC) $(CFLAGS) -c modulo.c
 
+  #	clean limpia los archivos generados
+	#	PHONY indica que un target no es un archivo real.
+.PHONY: clean
 clean:
-	rm -f main main-debug
+	rm -f *.o programa
+
+
+
